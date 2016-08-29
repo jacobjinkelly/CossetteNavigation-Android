@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -19,12 +20,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.estimote.sdk.Region;
 import com.example.cossettenavigation.beacons.ApplicationBeaconManager;
 import com.example.cossettenavigation.beacons.BeaconTrackingData;
 import com.example.cossettenavigation.map.AnchorBeacon;
 import com.example.cossettenavigation.map.Beacon;
 import com.example.cossettenavigation.map.DatabaseHelper;
-import com.example.cossettenavigation.map.Floor;
 import com.example.cossettenavigation.map.Map;
 import com.example.cossettenavigation.map.Zone;
 import com.example.cossettenavigation.pathfinding.Path;
@@ -99,22 +100,24 @@ public class SearchActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Zone zone = (Zone) parent.getItemAtPosition(position);
 
-                Floor floor=beaconManager.getFloor();
-                ArrayList<BeaconTrackingData> beacons=beaconManager.getNearestBeacons();
+//                Floor floor=beaconManager.getFloor();
+//                ArrayList<BeaconTrackingData> beacons=beaconManager.getNearestBeacons();
+//
+//                Double minDistance=Double.POSITIVE_INFINITY;
+//                BeaconTrackingData nearestTrackedBeacon=null;
+//
+//                for (BeaconTrackingData beaconData:beacons){
+//                    if (beaconData.getBeacon().getFloor()==floor&&minDistance>beaconData.getEstimatedAccuracy()){
+//                        minDistance=beaconData.getEstimatedAccuracy();
+//                        nearestTrackedBeacon=beaconData;
+//                    }
+//                }
 
-                Double minDistance=Double.POSITIVE_INFINITY;
-                BeaconTrackingData nearestTrackedBeacon=null;
-
-                for (BeaconTrackingData beaconData:beacons){
-                    if (beaconData.getBeacon().getFloor()==floor&&minDistance>beaconData.getEstimatedAccuracy()){
-                        minDistance=beaconData.getEstimatedAccuracy();
-                        nearestTrackedBeacon=beaconData;
-                    }
-                }
+                Pair<Region, BeaconTrackingData> nearestTrackedBeacon = beaconManager.getNearestTrackedBeacon();
 
                 if (nearestTrackedBeacon != null) {
-                    if (nearestTrackedBeacon.getEstimatedAccuracy() <= START_BEACON_RANGE) {
-                        Beacon startBeacon = nearestTrackedBeacon.getBeacon();
+                    if (nearestTrackedBeacon.second.getEstimatedAccuracy() <= START_BEACON_RANGE) {
+                        Beacon startBeacon = nearestTrackedBeacon.second.getBeacon();
 
                         double minTravelTime = Double.POSITIVE_INFINITY;
                         Path minPath = null;

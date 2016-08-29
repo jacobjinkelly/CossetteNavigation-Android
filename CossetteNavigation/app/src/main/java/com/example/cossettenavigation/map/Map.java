@@ -239,12 +239,12 @@ public class Map {
                 white1, 2, -3,
                 DEFAULT_UUID, 27415, 8243));
 
-        AnchorBeacon white19 = addAnchorBeacon(new AnchorBeacon(
-                "white19",
-                "Entrance Stair",
-                floor2,
-                white1, -3, -5,
-                DEFAULT_UUID, 21519, 1525));
+//        AnchorBeacon white19 = addAnchorBeacon(new AnchorBeacon(
+//                "white19",
+//                "Entrance Stair",
+//                floor2,
+//                white1, -3, -5,
+//                DEFAULT_UUID, 21519, 1525));
 
         AnchorBeacon white18 = addAnchorBeacon(new AnchorBeacon(
                 "white18",
@@ -292,7 +292,7 @@ public class Map {
         z2.addAnchorBeacons(white10, white15);
 
         Zone z4 = addZone(new Zone("Open Area", Zone.ZoneType.ROOM, true));
-        z4.addAnchorBeacons(white25, white19, white1); 
+        z4.addAnchorBeacons(white25, /*white19,*/ white1);
 
         Zone z3 = addZone(new Zone("Health Lab", Zone.ZoneType.HALLWAY, true));
         z3.addAnchorBeacons(white15, white1);
