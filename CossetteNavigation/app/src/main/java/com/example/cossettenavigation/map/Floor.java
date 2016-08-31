@@ -6,7 +6,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- *
+ * A floor of the building.
+ * @see Map
  */
 public class Floor implements Serializable {
 
@@ -19,11 +20,18 @@ public class Floor implements Serializable {
 
     private ArrayList<Zone> zones = new ArrayList<>();
 
+
+    /**
+     * Constructor using an absolute position.
+     */
     public Floor(String name, double zPosition) {
         this.name = name;
         this.zPosition = zPosition;
     }
 
+    /**
+     * Constructor using a position relative to another floor.
+     */
     public Floor(String name, Floor referenceFloor, double zPositionOffset) {
         this(name, referenceFloor.getZPosition() + zPositionOffset);
     }

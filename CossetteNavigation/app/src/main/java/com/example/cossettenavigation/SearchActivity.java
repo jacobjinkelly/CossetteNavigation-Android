@@ -33,15 +33,15 @@ import com.example.cossettenavigation.pathfinding.Pathfinder;
 
 import java.util.ArrayList;
 
-
+/**
+ * Allows the user to search for and select a destination to navigate to.
+ */
 public class SearchActivity extends AppCompatActivity {
-
-    //0);
 
     private static final String TAG = "SearchActivity";
 
     /**
-     * Beacon range (in metres) that is required to start navigation.
+     * The range to the nearest beacon that the device must be within before starting navigation.
      */
     private static final double START_BEACON_RANGE = Double.POSITIVE_INFINITY;
 
@@ -62,8 +62,8 @@ public class SearchActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        dbHelper=new DatabaseHelper(this);
-        db=dbHelper.getReadableDatabase();
+        dbHelper = new DatabaseHelper(this);
+        db = dbHelper.getReadableDatabase();
 
         String query;
         Intent searchIntent = getIntent();
@@ -92,9 +92,10 @@ public class SearchActivity extends AppCompatActivity {
 
         beaconManager = (ApplicationBeaconManager) getApplication();
 
-        searchSuggestions=(ListView) findViewById(R.id.search_suggestions);
+        searchSuggestions = (ListView) findViewById(R.id.search_suggestions);
         updateSearchSuggestions("");
 
+        // When a search suggestion is selected
         searchSuggestions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -115,10 +116,14 @@ public class SearchActivity extends AppCompatActivity {
 
                 Pair<Region, BeaconTrackingData> nearestTrackedBeacon = beaconManager.getNearestTrackedBeacon();
 
+                // Check for the nearest beacon
                 if (nearestTrackedBeacon != null) {
+
+                    // If the nearest beacon is in sufficient range
                     if (nearestTrackedBeacon.second.getEstimatedAccuracy() <= START_BEACON_RANGE) {
                         Beacon startBeacon = nearestTrackedBeacon.second.getBeacon();
 
+                        // Get the shortest path to the destination
                         double minTravelTime = Double.POSITIVE_INFINITY;
                         Path minPath = null;
 
@@ -153,20 +158,22 @@ public class SearchActivity extends AppCompatActivity {
 
     private void updateSearchSuggestions(String searchText) {
         ArrayList<Zone> filteredZones = new ArrayList<>();
-        searchText=searchText.toLowerCase();
+        searchText = searchText.toLowerCase();
+
         for (Zone zone : Map.zones) {
-            String zoneName=zone.getName().toLowerCase();
-            String zoneType=Utilities.getZoneFloorNamesString(zone).toLowerCase();
-            if ((zoneName.contains(searchText)||zoneType.contains(searchText)) && zone.getIsDestination()) {
+            String zoneName = zone.getName().toLowerCase();
+            String zoneType = Utilities.getZoneFloorNamesString(zone).toLowerCase();
+
+            if ((zoneName.contains(searchText) || zoneType.contains(searchText)) && zone.getIsDestination()) {
                 filteredZones.add(zone);
             }
         }
+
         searchSuggestions.setAdapter(new ZoneArrayAdapter(SearchActivity.this, filteredZones));
     }
 
     @Override
-    public boolean onCreateOptionsMenu (Menu menu)
-    {
+    public boolean onCreateOptionsMenu (Menu menu) {
         getMenuInflater().inflate(R.menu.menu_search, menu);
 
         searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
@@ -194,8 +201,9 @@ public class SearchActivity extends AppCompatActivity {
     }
 
 
-
-
+    /**
+     * Adapter for the search suggestion list.
+     */
     private class ZoneArrayAdapter extends ArrayAdapter<Zone> {
 
         public ZoneArrayAdapter(Context context, ArrayList<Zone> zones) {

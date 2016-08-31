@@ -7,7 +7,7 @@ import com.example.cossettenavigation.map.Zone;
 import java.io.Serializable;
 
 /**
- *
+ * The navigation path data between two beacons in the same {@link Zone}.
  */
 public class Step implements Serializable {
 
@@ -113,7 +113,6 @@ public class Step implements Serializable {
         switch (zone.getZoneType()) {
             case HALLWAY:
             case ROOM:
-                // TODO - fix bug - calculate distance between beacons
                 return String.format("Walk %.0f metres ahead", Map.distanceBetweenBeacons(startBeacon, endBeacon));
             case STAIRS:
             case ELEVATOR:
@@ -124,7 +123,7 @@ public class Step implements Serializable {
     }
 
     public String getDestinationDescription(){
-        return "To "+endBeacon.getDescription();
+        return "To " + endBeacon.getDescription();
     }
 
 }

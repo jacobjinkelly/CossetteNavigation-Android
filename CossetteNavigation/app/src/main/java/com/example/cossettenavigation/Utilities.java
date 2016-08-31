@@ -11,7 +11,7 @@ import com.example.cossettenavigation.pathfinding.Step;
 import java.util.ArrayList;
 
 /**
- * Helper methods for comparison, conversion, etc.
+ * Utility methods for comparison, conversion, string generation, etc.
  */
 public class Utilities {
 
@@ -28,6 +28,7 @@ public class Utilities {
             return false;
         }
     }
+
 
     /**
      * <p>
@@ -66,6 +67,7 @@ public class Utilities {
 
         return array;
     }
+
 
     public static String getAnchorBeaconNamesString(ArrayList<AnchorBeacon> anchorBeacons) {
         String string = "{ ";
@@ -139,15 +141,14 @@ public class Utilities {
     }
 
     public static String getTimeRemainingString(ArrayList<Integer> timeRemaining){
-        String string="{";
+        String string = "{";
         for (Integer integer : timeRemaining){
-            //TODO -  did i do serializing right?
-            string+=String.format("\n\t\t%s,",integer);
+            string += String.format("\n\t\t%s,", integer);
         }
         if (string.endsWith(",")){
-            string=string.substring(0,string.length()-1)+"\n";
+            string = string.substring(0, string.length() - 1) + "\n";
         }
-        string+="}";
+        string += "}";
         return string;
     }
 

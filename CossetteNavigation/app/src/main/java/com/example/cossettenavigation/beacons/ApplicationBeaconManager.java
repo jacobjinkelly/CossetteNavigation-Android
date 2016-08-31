@@ -31,13 +31,24 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * Global application state used to detect and manage beacons.
+ * <h1>Global application state</h1>
+ * <p>
+ *     Primarily used to detect and manage beacons, but also manages text-to-speech and vibrations.
+ * </p>
  *
- * Monitoring is coarse, sending enter and exit events (30 second intervals).
- * Ranging is fine, providing power and approximate distance readings (1 second intervals).
+ * <h2>Monitoring (background scanning)</h1>
+ * <p>
+ *     Monitoring is coarse, sending enter and exit events
+ *     (takes a maximum of 30 seconds to detect beacons).
+ * </p>
  *
- * Created by Bruno on 2016-07-22.
+ * <h2>Ranging (foreground scanning)</h2>
+ * <p>
+ *     Ranging is fine, providing power and approximate distance measurements
+ *     (in 1 second intervals).
+ * </p>
  *
+ * @see <a href="http://developer.estimote.com/android/tutorial/part-1-setting-up/">Setup instructions</a>
  * @see <a href="http://developer.estimote.com/android/tutorial/part-2-background-monitoring/">Monitoring tutorial</a>
  * @see <a href="http://developer.estimote.com/android/tutorial/part-3-ranging-beacons/">Ranging tutorial</a>
  */
@@ -48,12 +59,18 @@ public class ApplicationBeaconManager extends Application {
     private final Region ALL_BEACONS_REGION = new Region("All Beacons", null, null, null);
 
     /**
-     * The maximum distance a beacon can be from the device while being used in the position
-     * trilateration algorithm (in metres).
+     * The range for beacons to be used in the location trilateration algorithm (in metres).
      */
     private static double MAX_BEACON_DISTANCE_FOR_TRILATERATION = 5;
+
+    /**
+     * The range for beacons to be classified as a nearby zone (in metres).
+     */
     private static double BEACON_RANGE_FOR_NEARBY_ZONE = 10;
 
+    /**
+     * Tracks beacons, managing monitoring and ranging.
+     */
     private BeaconManager beaconManager;
 
     /**
@@ -61,13 +78,17 @@ public class ApplicationBeaconManager extends Application {
      */
     private HashMap<Region, BeaconTrackingData> trackedBeacons = new HashMap<>();
 
+    /**
+     * Tasks that will remove beacons from {@link #trackedBeacons} when not detected for a specific amount of time.
+     */
     private HashMap<Region, TimerTask> removeTrackedBeaconTimerTasks = new HashMap<>();
 
 
     /**
-     * True to enable, false to disable
+     * True to enable, false to disable.
      */
     private boolean isTextToSpeechEnabled = true;
+
     private TextToSpeech textToSpeech = null;
     private boolean isTextToSpeechAvailable = false;
 
@@ -139,7 +160,7 @@ public class ApplicationBeaconManager extends Application {
                 if (list.size() > 0) {
                     updateTrackedBeacon(region, list.get(0));
                 } else {
-                    Log.v(TAG, "setMonitoringListener(): No beacons in region");
+                    Log.v(TAG, "No beacons in region");
                 }
             }
 
@@ -177,7 +198,7 @@ public class ApplicationBeaconManager extends Application {
 
 
     private void startScanning() {
-        // Monitor all beacons
+        // Monitor and range all beacons
         for (com.example.cossettenavigation.map.Beacon beacon : Map.getAllBeacons()) {
             Region region = new Region(
                     beacon.getName(),
@@ -224,10 +245,10 @@ public class ApplicationBeaconManager extends Application {
 
         Log.v(TAG, "updateTrackedBeacon(): " + trackedBeacons.get(region).getBeacon().toString());
 
-        // The beacon must be in the tracked set, so update it with measurements
+        // The beacon must now be in the tracked set, so update it with measurements
         trackedBeacons.get(region).addMeasurements(beacon);
 
-        // Cancel tracked beacon removal timer if one exists for this region
+        // If a tracked beacon removal timer exists for this region, cancel it
         if (removeTrackedBeaconTimerTasks.containsKey(region)) {
             Log.v(TAG, String.format(
                     "updateTrackedBeacon(): Canceling timer task for \"%s\"",
@@ -237,7 +258,7 @@ public class ApplicationBeaconManager extends Application {
             removeTrackedBeaconTimerTasks.remove(region);
         }
 
-        // Set timer to remove tracked beacon in 5 seconds
+        // Set a timer to remove this tracked beacon in 5 seconds
         Log.v(TAG, String.format(
                 "updateTrackedBeacon(): Scheduling timer task for \"%s\"",
                 trackedBeacons.get(region).getBeacon().getName()));
@@ -313,7 +334,7 @@ public class ApplicationBeaconManager extends Application {
 
     /**
      * @see <a href="https://github.com/lemmingapex/Trilateration">Trilateration example</a>
-     * @return Estimated location (on map grid), or null if not found
+     * @return Estimated location (on map grid), or null if not found.
      */
     public Point2D getEstimatedLocation() {
         // Get beacon positions and distances
@@ -325,6 +346,7 @@ public class ApplicationBeaconManager extends Application {
         // Loop through tracked beacons
         for (HashMap.Entry<Region, BeaconTrackingData> trackedBeacon : trackedBeacons.entrySet()) {
             if (trackedBeacon.getValue().getEstimatedAccuracy() <= MAX_BEACON_DISTANCE_FOR_TRILATERATION) {
+
                 // Add position and distance (in metres)
                 positions.add(new double[] {
                         trackedBeacon.getValue().getBeacon().getXPosition() * Map.metresPerGridUnit,
@@ -338,9 +360,6 @@ public class ApplicationBeaconManager extends Application {
 
         // If there are 3 or more beacons (required for 2D triangulation)
         if (positions.size() >= 3) {
-/*            double[][] positions = new double[][] { { 5.0, -6.0 }, { 13.0, -15.0 }, { 21.0, -3.0 }, { 12.4, -21.2 } };
-            double[] distances = new double[] { 8.06, 13.97, 23.32, 15.31 };*/
-
             NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(
                     new TrilaterationFunction(
                             Utilities.getDoubleDoubleArray(positions), Utilities.getDoubleArray(distances)),
@@ -357,12 +376,12 @@ public class ApplicationBeaconManager extends Application {
             Point2D estimatedLocation = new Point2D(centroid[0] / Map.metresPerGridUnit,
                                                     centroid[1] / Map.metresPerGridUnit);
 
-            //Log.i(TAG, "getEstimatedLocation(): " + estimatedLocation);
+            //Log.v(TAG, "getEstimatedLocation(): " + estimatedLocation);
 
             return estimatedLocation;
 
         } else {
-/*            Log.i(TAG, String.format(
+/*            Log.v(TAG, String.format(
                     "getEstimatedLocation(): Not enough beacons within %.1fm to trilaterate location",
                     MAX_BEACON_DISTANCE_FOR_TRILATERATION));*/
 
@@ -371,8 +390,8 @@ public class ApplicationBeaconManager extends Application {
     }
 
 
-    public ArrayList<BeaconTrackingData> getNearestBeacons(){
-        ArrayList<BeaconTrackingData> beacons=new ArrayList<>();
+    public ArrayList<BeaconTrackingData> getNearestBeacons() {
+        ArrayList<BeaconTrackingData> beacons = new ArrayList<>();
         for (HashMap.Entry<Region, BeaconTrackingData> trackedBeacon : trackedBeacons.entrySet()){
             beacons.add(trackedBeacon.getValue());
         }
@@ -472,7 +491,7 @@ public class ApplicationBeaconManager extends Application {
     }
 
     private void destroyTextToSpeech() {
-        Log.i(TAG, "destroyTextToSpeech()");
+        Log.v(TAG, "destroyTextToSpeech()");
 
         if (isTextToSpeechAvailable) {
             textToSpeech.shutdown();
@@ -480,10 +499,14 @@ public class ApplicationBeaconManager extends Application {
         }
     }
 
+    /**
+     * Speaks the given text and vibrates the device.
+     */
     public void speakText(String text) {
         if (isTextToSpeechEnabled && isTextToSpeechAvailable && Build.VERSION.SDK_INT >= 21) {
             textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, "");
-            Vibrator v=(Vibrator) getSystemService(ApplicationBeaconManager.VIBRATOR_SERVICE);
+
+            Vibrator v = (Vibrator) getSystemService(ApplicationBeaconManager.VIBRATOR_SERVICE);
             v.vibrate(500);
         }
     }

@@ -13,17 +13,19 @@ import java.util.HashMap;
 import java.util.PriorityQueue;
 
 /**
- * <h1>
- *     Shortest Path Faster Algorithm (SPFA)
- * </h1>
+ * <h1>Shortest Path Faster Algorithm</h1>
  *
  * <p>
- *     Each use of the algorithm requires its own SPFA object.
- *     Should not be used directly by client code; use the Pathfinding class instead.
+ *     Calculates the minimum distance from the start node to the end node in a weighted, undirected graph.
+ * </p>
+ *
+ * <p>
+ *     Each use of the algorithm requires its own object.
+ *     Should not be used directly by client code; use {@link Pathfinder} instead.
  * </p>
  *
  * @see Pathfinder
- * @see <a href="https://en.wikipedia.org/wiki/Shortest_Path_Faster_Algorithm">SPFA</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Shortest_Path_Faster_Algorithm">SPFA Wiki</a>
  */
 class SPFA {
 
@@ -31,7 +33,7 @@ class SPFA {
 
     /**
      * <h1>Graph (adjacency list)</h1>
-     * <p>each AnchorBeacon -> { (connected beacon, travel time), ... }</p>
+     * <p>AnchorBeacon -> { (connected beacon, travel time), ... }</p>
      * <p>
      *     The graph is the same for all algorithm uses, so it belongs to the class
      *     and should only be constructed once.
@@ -43,7 +45,7 @@ class SPFA {
     private AnchorBeacon endBeacon;
 
     /**
-     * each AnchorBeacon -> (shortest travel time from root, previous beacon in shortest path)
+     * AnchorBeacon -> (shortest travel time from root, previous beacon in shortest path)
      */
     private HashMap<AnchorBeacon, Pair<Double, AnchorBeacon>> shortestTravelTimes;
 
@@ -115,14 +117,16 @@ class SPFA {
         queue.offer(startBeacon);
 
         while (queue.size() > 0) {
+            // Get current beacon
             AnchorBeacon currentBeacon = queue.poll();
 
+            // Go through current beacon's connections
             for (Pair<AnchorBeacon, Double> connection : graph.get(currentBeacon)) {
                 AnchorBeacon connectedBeacon = connection.first;
                 double connectionTime = connection.second;
 
+                // If necessary, update the connected beacon's shortest travel time and add it to the queue
                 double testTravelTime = shortestTravelTimes.get(currentBeacon).first + connectionTime;
-
                 if (testTravelTime < shortestTravelTimes.get(connectedBeacon).first) {
                     shortestTravelTimes.put(connectedBeacon, new Pair<>(testTravelTime, currentBeacon));
                     if (!queue.contains(connectedBeacon)) {
@@ -147,7 +151,7 @@ class SPFA {
 
         // Result found
         } else {
-            Log.i(TAG, "getResult(): Path found");
+            Log.v(TAG, "getResult(): Path found");
 
             return new Pair<>(shortestTravelTimes.get(endBeacon).first, constructPath(endBeacon));
         }
@@ -155,7 +159,7 @@ class SPFA {
 
 
     /**
-     * Constructs the path stored in `shortestTravelTimes` up to the given node.
+     * Constructs the path stored in {@link #shortestTravelTimes} up to the given node.
      */
     private ArrayList<Beacon> constructPath(AnchorBeacon finalBeacon) {
         ArrayList<Beacon> path = new ArrayList<>();

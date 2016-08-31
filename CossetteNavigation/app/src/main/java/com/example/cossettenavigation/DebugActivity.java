@@ -12,6 +12,9 @@ import com.example.cossettenavigation.beacons.ApplicationBeaconManager;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * Displays information for debugging purposes (detected beacons, map, location, etc.).
+ */
 public class DebugActivity extends AppCompatActivity {
 
     private static final String TAG = "DebugActivity";
@@ -28,14 +31,6 @@ public class DebugActivity extends AppCompatActivity {
         // Make the volume buttons control the text to speech volume (music stream)
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
-/*        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
 
 
 

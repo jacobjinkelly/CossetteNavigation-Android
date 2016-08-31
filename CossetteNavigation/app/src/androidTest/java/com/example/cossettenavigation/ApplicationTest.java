@@ -20,6 +20,9 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
         super(Application.class);
     }
 
+    /**
+     * Tests that any two unique beacons have different x-y coordinates.
+     */
     public void test_estimateTravelAngle() {
         Map map = new Map();
 
@@ -43,6 +46,9 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
         }
     }
 
+    /**
+     * Tests that a path exists between any two beacons.
+     */
     public void test_getShortestPath() {
         for (Beacon beacon1 : Map.getAllBeacons()) {
             for (Beacon beacon2 : Map.getAllBeacons()) {

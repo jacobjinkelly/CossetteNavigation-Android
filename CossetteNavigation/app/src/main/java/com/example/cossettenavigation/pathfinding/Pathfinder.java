@@ -12,7 +12,7 @@ import com.example.cossettenavigation.map.Zone;
 import java.util.ArrayList;
 
 /**
- * Interface for the pathfinding algorithm.
+ * Interface for the shortest path algorithm.
  */
 public class Pathfinder {
 
@@ -21,11 +21,11 @@ public class Pathfinder {
     static double INFINITY = Double.POSITIVE_INFINITY;
 
     /**
-     * Determines the shortest path between two beacons in the map.
-     * @return The shortest travel time (in seconds); a list of beacons representing the shortest path,
-     * beginning with startBeacon and ending with endBeacon. Returns null if no path is found.
+     * Determines the shortest path between two beacons.
+     * @return The shortest path by travel time, or null if no path is found.
      */
     public static Path getShortestPath(Beacon startBeacon, Beacon endBeacon) {
+        // If starting and ending at the same beacon, return an empty path
         if (startBeacon == endBeacon) {
             return new Path(0, new ArrayList<Step>());
         }
@@ -48,7 +48,6 @@ public class Pathfinder {
 
 
         if (result == null) {
-            // TODO what will UI show if path is null
             return null;
 
         } else {
@@ -76,6 +75,8 @@ public class Pathfinder {
                     return null;
 
                 } else {
+                    // Get angles
+
                     Double travelAngle = Map.estimateTravelAngle(beaconOne, beaconTwo);
 
                     double turnAngle;
@@ -170,6 +171,5 @@ public class Pathfinder {
     private static Pair<Double, ArrayList<Beacon>> getShortestPath(AnchorBeacon startBeacon, AnchorBeacon endBeacon) {
         return new SPFA(startBeacon, endBeacon).getShortestPath();
     }
-
 
 }

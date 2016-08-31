@@ -6,7 +6,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * A key area within a floor or building.
+ * A key area within a floor or building; may be a destination that the user can navigate to.
+ * Should only contain beacons such that the user can walk between any two beacons in a straight line.
  * @see Map
  */
 public class Zone implements Serializable {
@@ -27,10 +28,13 @@ public class Zone implements Serializable {
 
     private String name;
     private ZoneType zoneType;
+
+    /**
+     * Whether the zone should be a destination that the user can navigate to.
+     */
     private boolean isDestination;
 
     private ArrayList<Floor> floors = new ArrayList<>();
-
     private ArrayList<AnchorBeacon> anchorBeacons = new ArrayList<>();
     private ArrayList<SupportBeacon> supportBeacons = new ArrayList<>();
 

@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 /**
- * A beacon on the map, defined with a name, grid position, and identifiers.
+ * An Estimote beacon on the map.
+ * @see Map
  */
 public abstract class Beacon implements Serializable {
 
@@ -24,9 +25,6 @@ public abstract class Beacon implements Serializable {
 
 
 
-    /**
-     * Standard constructor.
-     */
     private Beacon(String name, String description, Floor floor, Point2D position, UUID uuid, int major, int minor) {
         this.name = name;
         this.description = description;
@@ -99,7 +97,9 @@ public abstract class Beacon implements Serializable {
         return name;
     }
 
-    public String getDescription() {return description;}
+    public String getDescription() {
+        return description;
+    }
 
     public Floor getFloor() {
         return floor;

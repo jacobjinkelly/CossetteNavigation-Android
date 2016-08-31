@@ -6,13 +6,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 
-import com.example.cossettenavigation.map.Map;
-import com.example.cossettenavigation.map.Zone;
-
-import java.util.ArrayList;
-
 /**
- * Created by Jacob on 2016-08-10.
+ * <h1>[Unused]</h1>
  */
 public class DestinationContentProvider extends ContentProvider {
 
@@ -26,9 +21,9 @@ public class DestinationContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        String table="zones";
-        String[] columns=new String[]{"_ID","name"};
-        Cursor result=SearchActivity.db.query(table,columns,selection,selectionArgs,null,null,sortOrder,null);
+        String table = "zones";
+        String[] columns = new String[] { "_ID", "name" };
+        Cursor result = SearchActivity.db.query(table, columns, selection, selectionArgs, null, null, sortOrder, null);
         return result;
     }
 

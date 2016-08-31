@@ -5,21 +5,33 @@ import android.util.Log;
 import java.util.ArrayList;
 
 /**
+ * <h1>Mapping data</h1>
  * <p>
- *     Organizing class for mapping data.
  *     Uses a rectangular grid system to define the locations of beacons and zones.
+ *     <b>All units are in metres and seconds.</b>
  * </p>
  *
+ * <h2>Floors</h2>
  * <p>
- *     Anchor Beacons - Placed in key locations (e.g. ends of hallways, doors, entrances and exits, stairs, elevators).
+ *     A floor of the building.
  * </p>
  *
+ * <h2>Anchor Beacons</h2>
  * <p>
- *     Support Beacons - Placed in supporting locations to improve location estimates (e.g. along hallways, middle of rooms).
+ *     Placed in key locations/intersections
+ *     (e.g. ends of hallways, doors, entrances and exits, stairs, elevators).
  * </p>
  *
+ * <h2>Support Beacons</h2>
  * <p>
- *     Zones - Key areas within a floor or building (e.g. hallways, rectangular spaces, stairs, elevators).
+ *     Placed in supporting locations to improve location estimates
+ *     (e.g. along hallways, middle of rooms).
+ * </p>
+ *
+ * <h2>Zones</h2>
+ * <p>
+ *     Key areas within a floor or building
+ *     (e.g. hallways, floors, rectangular spaces, stairs, elevators).
  * </p>
  */
 public class Map {
@@ -31,6 +43,9 @@ public class Map {
     private static final double STAIRS_TRAVEL_SPEED = 0.5;
     private static final double ELEVATOR_TRAVEL_SPEED = 0.5;
 
+    /**
+     * Default UUID of Estimote beacons.
+     */
     private static final String DEFAULT_UUID = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";
 
     public static ArrayList<Floor> floors = new ArrayList<>();
@@ -39,8 +54,10 @@ public class Map {
     public static ArrayList<Zone> zones = new ArrayList<>();
 
     /*
-        Grid properties.
-        The grid is defined with arbitrary units, which can be converted to real distances with the given ratio.
+        Grid properties
+
+        Originally, the grid was defined with arbitrary units.
+        Eventually, the grid was simplified to make 1 unit equal to 1 metre.
      */
     public static double gridWidth = 1;
     public static double gridHeight = 1;
@@ -68,6 +85,9 @@ public class Map {
     }
 
 
+    /**
+     * @return The straight-line distance between the points.
+     */
     public static double distanceBetweenPoints(Point3D pointOne, Point3D pointTwo) {
         return Math.sqrt(
                 Math.pow(pointTwo.x - pointOne.x, 2) +
@@ -76,7 +96,7 @@ public class Map {
     }
 
     /**
-     * Calculates the straight-line distance between two beacons.
+     * @return The straight-line distance between the beacons.
      */
     public static double distanceBetweenBeacons(Beacon beaconOne, Beacon beaconTwo) {
         return distanceBetweenPoints(
@@ -91,8 +111,7 @@ public class Map {
     }
 
     /**
-     * Assumes that both beacons are part of the same zone and have a straight-line connection.
-     * @return The estimated travel time (in seconds) between the two beacons.
+     * @return The estimated travel time between the two beacons in a straight line.
      */
     public static double estimateTravelTime(Beacon startBeacon, Beacon endBeacon, Zone zone) {
         double distance = distanceBetweenBeacons(startBeacon, endBeacon);
@@ -164,8 +183,8 @@ public class Map {
     /*
         Define floors, beacons, and zones
 
-        1. define floor
-        2. define beacons -> associate with floor
+        1. define floors
+        2. define beacons -> associate with floors
         3. define zones -> add beacons
      */
     static {
@@ -254,6 +273,7 @@ public class Map {
                 DEFAULT_UUID, 3531, 48649));
 
         // End floor 2
+
 
         // Start floor 3
 
