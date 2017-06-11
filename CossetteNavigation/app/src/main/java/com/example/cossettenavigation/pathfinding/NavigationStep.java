@@ -4,11 +4,15 @@ import com.example.cossettenavigation.map.Beacon;
 
 import java.io.Serializable;
 
+/**
+ * A step to be displayed on-screen during navigation.
+ * Turning and traveling directions are separate, as opposed to {@link Step} where they are combined.
+ */
 public class NavigationStep implements Serializable {
 
     private String descriptionOne;
     private String descriptionTwo;
-    private double arrowAngle;
+    private Double arrowAngle;
 
     private Beacon endBeacon;
     private double minimumTime;
@@ -18,7 +22,7 @@ public class NavigationStep implements Serializable {
 
     public NavigationStep(String descriptionOne,
                           String descriptionTwo,
-                          double arrowAngle,
+                          Double arrowAngle,
                           Beacon endBeacon,
                           double minimumTime) {
 
@@ -50,7 +54,7 @@ public class NavigationStep implements Serializable {
         return descriptionTwo;
     }
 
-    public double getArrowAngle() {
+    public Double getArrowAngle() {
         return arrowAngle;
     }
 

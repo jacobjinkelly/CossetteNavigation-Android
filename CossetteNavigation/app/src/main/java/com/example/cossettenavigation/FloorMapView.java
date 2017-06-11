@@ -14,7 +14,7 @@ import com.example.cossettenavigation.map.Map;
 import com.example.cossettenavigation.map.Point2D;
 
 /**
- * Created by Bruno on 2016-08-04.
+ * A view showing the beacons in {@link Map} and the estimated location on a grid.
  */
 public class FloorMapView extends View {
 
@@ -66,6 +66,7 @@ public class FloorMapView extends View {
 
         super.onDraw(canvas);
 
+        // Dimensions and sizes
         int canvasWidth = canvas.getWidth();
         int canvasHeight = canvas.getHeight();
 
@@ -89,6 +90,7 @@ public class FloorMapView extends View {
         // Draw beacons
         int floorsUp = 0;
 
+        // Draw beacons, colour coded by floor (using grayscale)
         for (Floor floor : Map.floors) {
             int colorValue = 255 - (75 * floorsUp);
             if (colorValue < 100) {
@@ -104,7 +106,7 @@ public class FloorMapView extends View {
                     "onDraw(): x = %f, y = %f, canvasWidth = %d, canvasHeight = %d",
                     x, y, canvasWidth, canvasHeight));*/
 
-                // Draw location
+                // Draw beacon
                 //Log.v(TAG, String.format("onDraw(): x = %.0f, y = %.0f\n%s", x, y, beacon));
                 canvas.drawPoint((float) x, (float) y, anchorBeaconPaint);
 

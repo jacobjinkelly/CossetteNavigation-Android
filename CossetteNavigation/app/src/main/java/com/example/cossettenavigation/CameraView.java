@@ -12,8 +12,7 @@ import java.io.IOException;
 /**
  * A view displaying a live feed from the camera.
  *
- * Partial code for displaying the continuous camera feed taken from:
- * https://github.com/aron-bordin/Android-Tutorials/tree/master/SimpleCamera
+ * @see <a href="https://github.com/aron-bordin/Android-Tutorials/tree/master/SimpleCamera">Original code</a>
  */
 public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
 
@@ -106,7 +105,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
         try {
             mCamera.stopPreview();
         } catch (Exception e) {
-            Log.i(TAG, "surfaceChanged(): stopping camera error - " + e);
+            Log.v(TAG, "surfaceChanged(): stopping camera error - " + e);
             // this will happen when you are trying the camera if it's not running
         }
 

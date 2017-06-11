@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * A beacon placed in a supporting location and used to improve location estimates.
+ * A beacon placed in a supporting location; can be used to improve location estimates.
  * @see Map
  */
 public class SupportBeacon extends Beacon implements Serializable {

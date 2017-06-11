@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- *
+ * A path going through a set of beacons.
  */
 public class Path implements Serializable {
 
@@ -20,6 +20,7 @@ public class Path implements Serializable {
     public Path(double travelTime, ArrayList<Step> steps) {
         this.travelTime = travelTime;
         this.steps = steps;
+
         /*timeRemaining=new ArrayList<>(steps.size());
         //construct prefix sum array
         timeRemaining.set(0,(int)steps.get(0).getTravelTime());
@@ -67,7 +68,7 @@ public class Path implements Serializable {
             navigationSteps.add(new NavigationStep(
                     "You are already there!",
                     "",
-                    0,
+                    null,
                     null,
                     0
             ));
@@ -78,25 +79,25 @@ public class Path implements Serializable {
             for (int i = 0; i < steps.size(); i++) {
                 Step step = steps.get(i);
 
+                // Start at beacon
                 if (i == 0) {
-                    // Go to start beacon
                     navigationSteps.add(new NavigationStep(
                             "Start at " + step.getStartBeacon().getDescription(),
                             "",
-                            0,
+                            null,
                             step.getStartBeacon(),
                             5
                     ));
                 }
 
+                // Turn at beacon
                 else {
-                    // Turn
                     navigationSteps.add(new NavigationStep(
                             step.getTurnDescription(),
                             "",
                             step.getTurnAngle(),
                             step.getStartBeacon(),
-                            5   // At least 5 seconds after turning
+                            5   // Wait at least 5 seconds after turning
                     ));
                 }
 
@@ -104,12 +105,12 @@ public class Path implements Serializable {
                 navigationSteps.add(new NavigationStep(
                         step.getTravelDescription(),
                         step.getEndBeacon().getDescription(),
-                        0,
+                        0.0,
                         step.getEndBeacon(),
                         step.getTravelTime()
                 ));
 
-                // Add travel time to all navigation steps
+                // Add this step's travel time to current and previous steps
                 for (NavigationStep navigationStep : navigationSteps) {
                     navigationStep.addTimeRemaining(step.getTravelTime());
                 }
@@ -119,7 +120,7 @@ public class Path implements Serializable {
             navigationSteps.add(new NavigationStep(
                     "You have arrived!",
                     (destination != null) ? destination.getName() : "",
-                    0,
+                    null,
                     null,
                     0
             ));
